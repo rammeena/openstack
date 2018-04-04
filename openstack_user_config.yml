@@ -1,0 +1,122 @@
+---
+cidr_networks:
+    container: 192.168.3.0/24
+    tunnel: 150.150.150.0/24
+
+used_ips:
+    - "192.168.3.1,192.168.3.50"
+    - "150.150.150.1,150.150.150.20"
+
+global_overrides:
+    internal_lb_vip_address: 192.168.3.50
+    external_lb_vip_address: 192.168.3.50
+    tunnel_bridge: "br-vxlan"
+    management_bridge: "br-mgmt"
+    provider_networks:
+        - network:
+            container_bridge: "br-mgmt"
+            container_type: "veth"
+            container_interface: "eth1"
+            ip_from_q: "container"
+            type: "raw"
+            group_binds:
+                - all_containers
+                - hosts
+            is_container_address: true
+            is_ssh_address: true
+        - network:
+            container_bridge: "br-vxlan"
+            container_type: "veth"
+            container_interface: "eth20"
+            ip_from_q: "tunnel"
+            type: "vxlan"
+            range: "1:2000"
+            net_name: "vxlan"
+            group_binds:
+                - neutron_linuxbridge_agent
+        - network:
+            container_bridge: "br-vlan"
+            container_type: "veth"
+            container_interface: "eth12"
+            host_bind_override: "enp0s3"
+            type: "flat"
+            net_name: "flat"
+            group_binds:
+                - neutron_linuxbridge_agent
+
+shared-infra_hosts:
+    ctl1:
+        ip: 192.168.3.20
+
+repo-infra_hosts:
+    ctl1:
+        ip: 192.168.3.20
+
+haproxy_hosts:
+    ctl1:
+        ip: 192.168.3.20
+
+#log_hosts:
+#    deploy:
+#        ip: 192.168.3.28
+
+identity_hosts:
+    ctl1:
+        ip: 192.168.3.20
+
+storage-infra_hosts:
+    ctl1:
+        ip: 192.168.3.20
+
+image_hosts:
+    ctl1:
+        ip: 192.168.3.20
+
+compute-infra_hosts:
+    ctl1:
+        ip: 192.168.3.20
+
+compute_hosts:
+    comp1:
+        ip: 192.168.3.21
+
+network_hosts: 
+    net1:
+        ip: 192.168.3.22
+
+storage_hosts:
+    ctl1:
+        ip: 192.168.3.20
+        container_vars:
+          cinder_backends:
+            lvm:
+              volume_backend_name: LVM_iSCSI
+              volume_driver: cinder.volume.drivers.lvm.LVMVolumeDriver
+              volume_group: cinder-volumes
+              iscsi_ip_address: "{{ cinder_storage_address }}"
+
+dashboard_hosts:
+    ctl1:
+        ip: 192.168.3.20
+
+#orchestration_hosts:
+#    ctl1:
+#        ip: 192.168.3.20
+
+
+#metering-infra_hosts:  
+#    ctl1:
+#        ip: 192.168.3.20
+#
+#metering-alarm_hosts: 
+#    ctl1:
+#        ip: 192.168.3.20
+#
+#metrics_hosts:
+#    ctl1:
+#        ip: 192.168.3.20
+#
+#metering-compute_hosts: 
+#    comp1:
+#        ip: 192.168.3.11
+#
