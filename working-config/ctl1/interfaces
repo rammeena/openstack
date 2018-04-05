@@ -1,0 +1,53 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+auto enp0s3
+iface enp0s3 inet manual
+
+auto br-vlan
+iface br-vlan inet static
+        address 2.2.2.20
+        netmask 255.255.255.0
+        bridge_ports enp0s3
+        bridge_stp off
+
+auto enp0s8
+iface enp0s8 inet manual
+
+auto br-ex
+iface br-ex inet static
+        address 1.1.1.20
+        netmask 255.255.255.0
+        bridge_ports enp0s8
+        bridge_stp off
+
+auto enp0s9
+iface enp0s9 inet manual
+
+auto br-vxlan
+iface br-vxlan inet static
+        address 150.150.150.20
+        netmask 255.255.255.0
+        bridge_ports enp0s9
+        bridge_stp off
+
+auto enp0s10
+iface enp0s10 inet manual
+
+auto br-mgmt
+iface br-mgmt inet static
+        address 192.168.3.20
+        netmask 255.255.255.0
+        bridge_ports enp0s10
+        bridge_stp off
+
+iface br-mgmt inet static
+        address 192.168.3.50
+        netmask 255.255.255.0
+	gateway 192.168.3.1
+	dns-nameservers 1.1.1.1 1.0.0.1
+source /etc/network/interfaces.d/*.cfg
